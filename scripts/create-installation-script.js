@@ -40,7 +40,7 @@ function run() {
     });
 
     jelastic.local.ReturnResult(
-        SSLManager.creteScriptAndInstall()
+        SSLManager.createScriptAndInstall()
     );
 }
 
