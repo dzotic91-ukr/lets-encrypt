@@ -505,11 +505,13 @@ function SSLManager(config) {
         return { result: 0 };
     };
 
-    me.defineNodeMemory = function defineContainerMem() {
+    me.defineNodeMemory = function defineNodeMemory() {
         var resp;
 
+        resp = me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
+
         log("DEBUG3 - resp" + resp);
-        return me.exec(me.cmd, "free -m");
+        return me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
     };
 
     me.initBindedDomains = function() {
