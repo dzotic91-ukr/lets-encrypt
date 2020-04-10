@@ -415,11 +415,11 @@ function SSLManager(config) {
 
     me.createScriptAndInstall = function createInstallationScript() {
         return me.exec([
-            [ me.defineNodeMemory ],
             [ me.initAddOnExtIp, config.withExtIp ],
             [ me.initFalbackToFake, config.fallbackToX1 ],
             [ me.applyCustomDomains, config.customDomains ],
             [ me.initEntryPoint ],
+            [ me.defineNodeMemory ],
             [ me.validateEntryPoint ],
             [ me.createScript ],
             [ me.evalScript, "install" ]
@@ -508,8 +508,8 @@ function SSLManager(config) {
     me.defineNodeMemory = function defineContainerMem() {
         var resp;
 
+        log("DEBUG3 - resp" + resp);
         return me.exec(me.cmd, "free -m");
-        log("DEBUG2 - resp" + resp);
     };
 
     me.initBindedDomains = function() {
