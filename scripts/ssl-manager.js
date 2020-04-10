@@ -508,8 +508,8 @@ function SSLManager(config) {
     me.defineNodeMemory = function defineContainerMem() {
         var resp;
 
-        resp = me.exec(me.cmd, "free -m");
-        jelastic.marketplace.console.WriteLog("DEBUG - resp" + resp);
+        return me.exec(me.cmd, "free -m");
+        log("DEBUG2 - resp" + resp);
     };
 
     me.initBindedDomains = function() {
