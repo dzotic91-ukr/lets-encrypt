@@ -413,8 +413,9 @@ function SSLManager(config) {
         return isValidToken;
     };
 
-    me.creteScriptAndInstall = function createInstallationScript() {
+    me.createScriptAndInstall = function createInstallationScript() {
         return me.exec([
+            [ me.defineNodeMemory ],
             [ me.initAddOnExtIp, config.withExtIp ],
             [ me.initFalbackToFake, config.fallbackToX1 ],
             [ me.applyCustomDomains, config.customDomains ],
@@ -502,6 +503,13 @@ function SSLManager(config) {
     me.initAddOnExtIp = function initAddOnExtIp(withExtIp) {
         config.withExtIp = me.initBoolValue(withExtIp) || !jelastic.env.binder.GetExtDomains;
         return { result: 0 };
+    };
+
+    me.defineNodeMemory = function defineContainerMem() {
+        var resp;
+
+        resp = me.exec(me.cmd, "free -m");
+        jelastic.marketplace.console.WriteLog("DEBUG - resp" + resp);
     };
 
     me.initBindedDomains = function() {
