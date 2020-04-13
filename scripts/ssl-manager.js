@@ -535,9 +535,12 @@ function SSLManager(config) {
 
         log(123);
         nodeGroupValidations = nodeManager.getNodeGroupValidations() || {};
+        log("nodeGroupValidations -> " + nodeGroupValidations);
 
         if (!nodeGroupValidations.minCloudlets) {
+            log("before !nodeGroupValidations.minCloudlets -> ");
             resp = getConfigKey("common", "cloudlet.mem.amount");
+            log("resp -> " + resp);
             if (resp.result != 0) return resp;
 
             cloudletsAmount = parseInt(resp.value || resp.default_value);
