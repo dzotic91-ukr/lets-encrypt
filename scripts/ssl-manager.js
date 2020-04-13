@@ -533,7 +533,8 @@ function SSLManager(config) {
             cloudletsAmount,
             resp;
 
-        nodeGroupValidations = me.getNodeGroupValidations() || {};
+        log(123);
+        nodeGroupValidations = nodeManager.getNodeGroupValidations() || {};
 
         if (!nodeGroupValidations.minCloudlets) {
             resp = getConfigKey("common", "cloudlet.mem.amount");
