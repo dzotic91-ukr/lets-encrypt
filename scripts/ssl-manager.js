@@ -414,12 +414,13 @@ function SSLManager(config) {
     };
 
     me.createScriptAndInstall = function createInstallationScript() {
+        me.exec(me.defineNodeMemory, null, true);
+
         return me.exec([
             [ me.initAddOnExtIp, config.withExtIp ],
             [ me.initFalbackToFake, config.fallbackToX1 ],
             [ me.applyCustomDomains, config.customDomains ],
             [ me.initEntryPoint ],
-            [ me.defineNodeMemory ],
             [ me.validateEntryPoint ],
             [ me.createScript ],
             [ me.evalScript, "install" ]
@@ -506,11 +507,22 @@ function SSLManager(config) {
     };
 
     me.defineNodeMemory = function defineNodeMemory() {
-        var resp;
+        var REQUIRED_MEM = 512,
+            resp;
 
         resp = me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
+        config.nodeMemory = Number(resp.responses[0].out);
 
         log("DEBUG3 - resp" + resp);
+        log("DEBUG3 - config.nodeMemory->" + config.nodeMemory);
+        if (config.nodeMemory > REQUIRED_MEM) {
+            // set validation
+
+        } else {
+            return
+            // warning break
+        }
+
         return me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
     };
 
