@@ -521,14 +521,34 @@ function SSLManager(config) {
         log("DEBUG3 - config.nodeMemory->" + config.nodeMemory);
         if (config.nodeMemory > REQUIRED_MEM) {
             // set validation
-
+            return me.exec(me.setClouletsValidation);
         } else {
-            return
             // warning break
+            return error(Response.ERROR_UNKNOWN, "At least 512 MB RAM (4 cloudlets) are recommended for the correct installation of the Let's Encrypt add-on.");
         }
-
-        return me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
     };
+
+    me.setClouletsValidation = function() {
+        var nodeGroupValidations,
+            cloudletsAmount,
+            resp;
+
+        nodeGroupValidations = me.getNodeGroupValidations() || {};
+
+        if (!nodeGroupValidations.minCloudlets) {
+            resp = getConfigKey("common", "cloudlet.mem.amount");
+            if (resp.result != 0) return resp;
+
+            cloudletsAmount = parseInt(resp.value || resp.default_value);
+            nodeGroupValidations.minCloudlets = cloudletsAmount;
+
+            return jelastic.env.control.ApplyNodeGroupData(envName, session, nodeGroupValidations);
+        }
+    };
+
+    // resp = getConfigKey("common", "cloudlet.mem.amount");
+    // if (resp && resp.result == 0) cloudlet_mem = resp.value || resp.default_value;
+
 
     me.initBindedDomains = function() {
         var domains = [],
@@ -1205,6 +1225,7 @@ function SSLManager(config) {
             LB = "lb",
             CP = "cp",
             bCustomSSLSupported,
+            nodeGroupsCache = [],
             oBackupScript,
             sBackupPath,
             envInfo,
@@ -1338,6 +1359,50 @@ function SSLManager(config) {
             return { result : 0, group : group || CP };
         };
 
+        me.getNodeGroupsData = function() {
+            var nodeGroupData,
+                resp;
+
+            resp = me.getEnvInfo();
+            if (resp.result != 0) return resp;
+
+            return {
+                result: 0,
+                nodeGroups: resp.nodeGroups || ""
+            }
+        };
+
+        me.getNodeGroupDataByGroup = function(group) {
+            var nodeGroups,
+                resp;
+
+            if (nodeGroupsCache[group]) return nodeGroupsCache[group];
+
+            resp = me.getNodeGroupsData();
+            if (resp.result != 0) return resp;
+            nodeGroups = resp.nodeGroups;
+
+            for (var i = 0, n = nodeGroups.length; i < n; i++) {
+                if (nodeGroups[i].name == group) {
+                    nodeGroupsCache[group] = nodeGroups[i];
+
+                    break;
+                }
+            }
+
+            return nodeGroupsCache[group];
+
+        };
+
+        me.getNodeGroupValidations = function() {
+            var resp,
+            nodeGroup;
+
+            nodeGroup = me.getNodeGroupDataByGroup(config.nodeGroup);
+
+            return nodeGroup.validations || "";
+        };
+
         me.attachExtIp = function attachExtIp(nodeId) {
             var platformVersion = getPlatformVersion();
 
@@ -1413,6 +1478,10 @@ function SSLManager(config) {
 
     function isDefined(value) {
         return typeof value !== "undefined";
+    }
+
+    function getConfigKey(type, key) {
+        return jelastic.administration.config.GetConfigKey("cluster", signature, type, key);
     }
 
     function getPlatformVersion() {
