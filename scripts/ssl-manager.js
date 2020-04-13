@@ -518,8 +518,8 @@ function SSLManager(config) {
         config.nodeMemory = Number(resp.responses[0].out);
 
         log("DEBUG3 - resp" + resp);
-        log("DEBUG3 - config.nodeMemory->" + config.nodeMemory);
-        if (config.nodeMemory > REQUIRED_MEM) {
+        log("DEBUG3 - config.nodeMemory=->" + config.nodeMemory);
+        if (config.nodeMemory >= REQUIRED_MEM) {
             // set validation
             return me.exec(me.setClouletsValidation);
         } else {
