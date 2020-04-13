@@ -510,7 +510,11 @@ function SSLManager(config) {
         var REQUIRED_MEM = 512,
             resp;
 
-        resp = me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
+        log("DEBUG");
+        // resp = me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
+        resp = me.cmd("free -m | grep Mem | awk '{print $2}'", {
+            nodeGroup: config.nodeGroup
+        });
         config.nodeMemory = Number(resp.responses[0].out);
 
         log("DEBUG3 - resp" + resp);
