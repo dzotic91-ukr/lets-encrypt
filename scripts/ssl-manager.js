@@ -544,8 +544,8 @@ function SSLManager(config) {
             cloudletsAmount = parseInt(REQUIRED_MEM / me.getCloudletsMemAmount());
             nodeGroupValidations.minCloudlets = cloudletsAmount;
 
-            log("nodeGroupValidations2 -> " + nodeGroupValidations);
-            return jelastic.env.control.ApplyNodeGroupData(config.envName, session, nodeGroupValidations);
+            log("nodeGroupValidations3 -> " + nodeGroupValidations);
+            return jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, nodeGroupValidations);
         }
     };
 
