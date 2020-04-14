@@ -34,6 +34,8 @@ function SSLManager(config) {
         StrSubstitutor = org.apache.commons.lang3.text.StrSubstitutor,
         ENVIRONMENT_EXT_DOMAIN_IS_BUSY = 2330,
         ANCIENT_VERSION_OF_PYTHON = 4,
+        CLOUDLET_MEM_AMOUNT = 128,
+        REQUIRED_MEM = 512,
         Random = com.hivext.api.utils.Random,
         me = this,
         isValidToken = false,
@@ -248,7 +250,7 @@ function SSLManager(config) {
                 logPath: logPath,
                 backupPath: backupPath,
                 effPath: nodeManager.getPath("opt/eff.org")
-            }],
+            }]
         ]);
     };
 
@@ -315,7 +317,7 @@ function SSLManager(config) {
         return me.exec(me.cmd, "cat %(backupPath)/letsencrypt-cron >> /var/spool/cron/root", {
             backupPath: nodeManager.getBackupPath()
         });
-    },
+    };
 
     me.autoUpdate = function () {
         var resp;
@@ -507,8 +509,7 @@ function SSLManager(config) {
     };
 
     me.defineNodeMemory = function defineNodeMemory() {
-        var REQUIRED_MEM = 512,
-            resp;
+        var resp;
 
         log("DEBUG");
         // resp = me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
@@ -539,19 +540,18 @@ function SSLManager(config) {
 
         if (!nodeGroupValidations.minCloudlets) {
             log("before !nodeGroupValidations.minCloudlets -> ");
-            resp = getConfigKey("common", "cloudlet.mem.amount");
-            log("resp -> " + resp);
-            if (resp.result != 0) return resp;
 
-            cloudletsAmount = parseInt(resp.value || resp.default_value);
+            cloudletsAmount = parseInt(REQUIRED_MEM / me.getCloudletsMemAmount());
             nodeGroupValidations.minCloudlets = cloudletsAmount;
 
+            log("nodeGroupValidations -> " + nodeGroupValidations);
             return jelastic.env.control.ApplyNodeGroupData(envName, session, nodeGroupValidations);
         }
     };
 
-    // resp = getConfigKey("common", "cloudlet.mem.amount");
-    // if (resp && resp.result == 0) cloudlet_mem = resp.value || resp.default_value;
+    me.getCloudletsMemAmount = function() {
+        return CLOUDLET_MEM_AMOUNT; // TODO: read from system settings
+    };
 
 
     me.initBindedDomains = function() {
@@ -1482,10 +1482,6 @@ function SSLManager(config) {
 
     function isDefined(value) {
         return typeof value !== "undefined";
-    }
-
-    function getConfigKey(type, key) {
-        return jelastic.administration.config.GetConfigKey("cluster", session, type, key);
     }
 
     function getPlatformVersion() {
