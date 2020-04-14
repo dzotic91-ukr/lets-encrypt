@@ -416,7 +416,10 @@ function SSLManager(config) {
     };
 
     me.createScriptAndInstall = function createInstallationScript() {
-        me.exec(me.defineNodeMemory, null, true);
+        var resp;
+
+        resp = me.exec(me.defineNodeMemory, null, true);
+        if (resp.result != 0) return resp;
 
         return me.exec([
             [ me.initAddOnExtIp, config.withExtIp ],
@@ -521,7 +524,6 @@ function SSLManager(config) {
         log("DEBUG3 - resp" + resp);
         log("DEBUG3 - config.nodeMemory=->" + config.nodeMemory);
         if (config.nodeMemory >= REQUIRED_MEM) {
-            // set validation
             return me.exec(me.setClouletsValidation);
         } else {
             // warning break
@@ -534,7 +536,6 @@ function SSLManager(config) {
             cloudletsAmount,
             resp;
 
-        log(123);
         nodeGroupValidations = nodeManager.getNodeGroupValidations() || {};
         log("nodeGroupValidations -> " + nodeGroupValidations);
 
