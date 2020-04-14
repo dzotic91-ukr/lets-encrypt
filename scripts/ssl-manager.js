@@ -1485,7 +1485,7 @@ function SSLManager(config) {
     }
 
     function getConfigKey(type, key) {
-        return jelastic.administration.config.GetConfigKey("cluster", signature, type, key);
+        return jelastic.administration.config.GetConfigKey("cluster", session, type, key);
     }
 
     function getPlatformVersion() {
