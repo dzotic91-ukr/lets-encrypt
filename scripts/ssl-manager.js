@@ -545,7 +545,7 @@ function SSLManager(config) {
             nodeGroupValidations.minCloudlets = cloudletsAmount;
 
             log("nodeGroupValidations3 -> " + nodeGroupValidations);
-            return jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, nodeGroupValidations);
+            return jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
         }
     };
 
