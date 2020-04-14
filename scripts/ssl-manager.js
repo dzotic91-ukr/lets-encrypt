@@ -237,7 +237,8 @@ function SSLManager(config) {
                     nodeManager.getScriptPath("validation.sh"),
                     autoUpdateScript
                 ].join(" ")
-            }]
+            }],
+            [ me.removeNodeValidation ]
         ]);
     };
 
@@ -418,7 +419,7 @@ function SSLManager(config) {
     me.createScriptAndInstall = function createInstallationScript() {
         var resp;
 
-        resp = me.exec(me.defineNodeMemory, null, true);
+        resp = me.exec(me.configureNodeMemory, null, true);
         if (resp.result != 0) return resp;
 
         return me.exec([
@@ -511,17 +512,12 @@ function SSLManager(config) {
         return { result: 0 };
     };
 
-    me.defineNodeMemory = function defineNodeMemory() {
+    me.configureNodeMemory = function configureNodeMemory() {
         var resp;
 
-        log("DEBUG");
-        // resp = me.exec(me.cmd, "free -m | grep Mem | awk '{print $2}'");
-        resp = me.cmd("free -m | grep Mem | awk '{print $2}'", {
-            nodeGroup: config.nodeGroup
-        });
-        config.nodeMemory = Number(resp.responses[0].out);
+        resp = me.defineNodeMemory();
+        if (resp.result != 0) return resp;
 
-        log("DEBUG3 - resp" + resp);
         log("DEBUG3 - config.nodeMemory=->" + config.nodeMemory);
         if (config.nodeMemory >= REQUIRED_MEM) {
             return me.exec(me.setClouletsValidation);
@@ -529,6 +525,32 @@ function SSLManager(config) {
             // warning break
             return error(Response.ERROR_UNKNOWN, "At least 512 MB RAM (4 cloudlets) are recommended for the correct installation of the Let's Encrypt add-on.");
         }
+    };
+
+    me.defineNodeMemory = function() {
+        var resp;
+
+        resp = me.cmd("free -m | grep Mem | awk '{print $2}'", {
+            nodeGroup: config.nodeGroup
+        });
+        config.nodeMemory = Number(resp.responses[0].out);
+        return {result: 0};
+    };
+
+    me.removeNodeValidation = function removeNodeValidation() {
+        var nodeGroupValidations,
+            resp;
+
+        nodeGroupValidations = nodeManager.getNodeGroupValidations();
+
+        if (config.setValidations && nodeGroupValidations) {
+            nodeGroupValidations.minCloudlets = "";
+
+            log("nodeGroupValidations3 -> " + nodeGroupValidations);
+            return jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
+        }
+
+        return { result: 0 };
     };
 
     me.setClouletsValidation = function() {
@@ -546,14 +568,16 @@ function SSLManager(config) {
             nodeGroupValidations.minCloudlets = cloudletsAmount;
 
             log("nodeGroupValidations3 -> " + nodeGroupValidations);
-            return jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
+            resp = jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
+            if (resp.result != 0) return resp;
+            config.setValidations = true;
         }
+        return { result: 0 };
     };
 
     me.getCloudletsMemAmount = function() {
         return CLOUDLET_MEM_AMOUNT; // TODO: read from system settings
     };
-
 
     me.initBindedDomains = function() {
         var domains = [],
