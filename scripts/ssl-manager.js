@@ -544,8 +544,9 @@ function SSLManager(config) {
         nodeGroupValidations = nodeManager.getNodeGroupValidations();
 
         log("remove nodeGroupValidations -> " + nodeGroupValidations)
+        log("config->" + config);
         if (config.setValidations && nodeGroupValidations) {
-            log("remove in if -> ")
+            log("remove in if -> ");
             nodeGroupValidations.minCloudlets = "";
 
             log("nodeGroupValidations3 -> " + nodeGroupValidations);
@@ -573,6 +574,8 @@ function SSLManager(config) {
             resp = jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
             if (resp.result != 0) return resp;
             config.setValidations = true;
+
+            log("config -> " + config);
         }
         return { result: 0 };
     };
