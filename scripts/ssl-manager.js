@@ -543,7 +543,9 @@ function SSLManager(config) {
 
         nodeGroupValidations = nodeManager.getNodeGroupValidations();
 
+        log("remove nodeGroupValidations -> " + nodeGroupValidations)
         if (config.setValidations && nodeGroupValidations) {
+            log("remove in if -> ")
             nodeGroupValidations.minCloudlets = "";
 
             log("nodeGroupValidations3 -> " + nodeGroupValidations);
@@ -1429,7 +1431,7 @@ function SSLManager(config) {
 
             nodeGroup = me.getNodeGroupDataByGroup(config.nodeGroup);
 
-            return nodeGroup.validations || "";
+            return nodeGroup.validation || "";
         };
 
         me.attachExtIp = function attachExtIp(nodeId) {
