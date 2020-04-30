@@ -521,6 +521,7 @@ function SSLManager(config) {
 
         if (config.nodeMemory >= REQUIRED_MEM) {
             log("in if  ->" + config.nodeMemory);
+            log("me.setClouletsValidation ->" + me.setClouletsValidation);
             return me.exec(me.setClouletsValidation);
         } else {
             return error(Response.ERROR_UNKNOWN, "At least 512 MB RAM (4 cloudlets) are recommended for the correct installation of the Let's Encrypt add-on.");
@@ -559,14 +560,17 @@ function SSLManager(config) {
             platformVersion,
             cloudletsAmount,
             resp;
+        log("in setClouletsValidation");
 
         nodeGroupValidations = nodeManager.getNodeGroupValidations() || {};
 
+        log("nodeGroupValidations.minCloudlets ->" + nodeGroupValidations.minCloudlets);
         if (!nodeGroupValidations.minCloudlets) {
             cloudletsAmount = parseInt(REQUIRED_MEM / me.getCloudletsMemAmount());
             nodeGroupValidations.minCloudlets = cloudletsAmount;
             platformVersion = getPlatformVersion();
 
+            log("ncompareVersions(platformVersion, '5.8.1') ->" + compareVersions(platformVersion, '5.8.1'));
             if (compareVersions(platformVersion, '5.8.1') >= 0) {
                 resp = jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
                 log("applied nodeGroup data  ->");
