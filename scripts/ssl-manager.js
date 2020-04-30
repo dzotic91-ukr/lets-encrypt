@@ -570,6 +570,7 @@ function SSLManager(config) {
             nodeGroupValidations.minCloudlets = cloudletsAmount;
             platformVersion = getPlatformVersion();
 
+            log("platformVersion" + platformVersion);
             log("ncompareVersions(platformVersion, '5.8.1') ->" + compareVersions(platformVersion, '5.8.1'));
             if (compareVersions(platformVersion, '5.8.1') >= 0) {
                 resp = jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
