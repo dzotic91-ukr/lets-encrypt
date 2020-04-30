@@ -547,7 +547,7 @@ function SSLManager(config) {
         if (config.setValidations && nodeGroupValidations) {
             nodeGroupValidations.minCloudlets = "";
 
-            if (compareVersions(platformVersion, '5.8.1') >= 0) {
+            if (compareVersions(platformVersion, '5.8') >= 0) {
                 return jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
             }
         }
@@ -571,7 +571,6 @@ function SSLManager(config) {
             platformVersion = getPlatformVersion();
 
             log("platformVersion" + platformVersion);
-            log("ncompareVersions(platformVersion, '5.8') ->" + compareVersions(platformVersion, '5.8.1'));
             if (compareVersions(platformVersion, '5.8') >= 0) {
                 resp = jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
                 log("applied nodeGroup data  ->");
