@@ -76,11 +76,11 @@ function SSLManager(config) {
             "backup-scripts": me.backupScripts,
             "restore-scripts": me.restoreScripts
         };
-        
+
         if (getParam("uninstall")) {
             action = "uninstall";
         }
-        
+
         if (!actions[action]) {
             return {
                 result : Response.ERROR_UNKNOWN,
@@ -149,7 +149,7 @@ function SSLManager(config) {
 
         //log("ActionLog: " + oResp);
     };
-    
+
     me.updateGeneratedCustomDomains = function () {
         var setting = "opt/letsencrypt/settings",
             resp;
@@ -160,9 +160,9 @@ function SSLManager(config) {
         ], {
             setting : nodeManager.getPath(setting)
         });
-        
+
         if (resp.result != 0) return resp;
-        
+
         resp = resp.responses ? resp.responses[0] : resp;
         resp = resp.out.replace(/\'/g, "").split("\n");
 
@@ -329,7 +329,7 @@ function SSLManager(config) {
 
         if (!config.isTask) {
             me.logAction("StartUpdateLEFromContainer");
-            
+
             if (!session && me.hasValidToken()) {
                 session = signature;
             }
@@ -401,7 +401,7 @@ function SSLManager(config) {
 
     me.addAutoUpdateTask = function addAutoUpdateTask() {
         me.logAction("AddLEAutoUpdateTask");
-        
+
         return jelastic.utils.scheduler.AddTask({
             appid: appid,
             session: session,
@@ -468,7 +468,7 @@ function SSLManager(config) {
     me.getCustomDomains = function () {
         return config.customDomains;
     };
-    
+
     me.setSkippedDomains = function (domains) {
         config.skippedDomains = domains;
     };
@@ -516,9 +516,11 @@ function SSLManager(config) {
         var resp;
 
         resp = me.defineNodeMemory();
+        log("defineNodeMemory ->" + resp);
         if (resp.result != 0) return resp;
 
         if (config.nodeMemory >= REQUIRED_MEM) {
+            log("in if  ->" + config.nodeMemory);
             return me.exec(me.setClouletsValidation);
         } else {
             return error(Response.ERROR_UNKNOWN, "At least 512 MB RAM (4 cloudlets) are recommended for the correct installation of the Let's Encrypt add-on.");
@@ -567,10 +569,12 @@ function SSLManager(config) {
 
             if (compareVersions(platformVersion, '5.8.1') >= 0) {
                 resp = jelastic.env.control.ApplyNodeGroupData(config.envName, session, config.nodeGroup, {"validation": nodeGroupValidations});
+                log("applied nodeGroup data  ->");
                 if (resp.result != 0) return resp;
                 config.setValidations = true;
             }
         }
+        log("config.setValidations ->" + config.setValidations);
         return { result: 0 };
     };
 
@@ -676,7 +680,7 @@ function SSLManager(config) {
 
         for (var j = 0, node; node = nodes[j]; j++) {
             if (node.nodeGroup != group) continue;
-            
+
             me.initAddOnExtIp(config.withExtIp);
 
             if (config.withExtIp) {
@@ -981,7 +985,7 @@ function SSLManager(config) {
     };
 
     me.deploy = function deploy() {
-        if (config.deployHook) 
+        if (config.deployHook)
         {
             return me.evalHook(config.deployHook, config.deployHookType);
         }
@@ -1141,7 +1145,7 @@ function SSLManager(config) {
 
         return sResp || "";
     };
-    
+
     me.isMoreLEAppInstalled = function isMoreLEAppInstalled () {
         var resp;
 
