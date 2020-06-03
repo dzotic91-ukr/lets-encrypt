@@ -648,7 +648,7 @@ function SSLManager(config) {
     };
 
     me.getCloudletsMemAmount = function() {
-        var nodes = me.getNodesByGroup(config.nodeGroup),
+        var nodes = nodeManager.getNodesByGroup(config.nodeGroup),
         node;
 
         node = nodes[0] || {};
