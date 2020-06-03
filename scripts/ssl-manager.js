@@ -1622,7 +1622,7 @@ function SSLManager(config) {
 
             for (var i = 0, n = nodes.length; i < n; i++) {
                 log("nodes[i]->" + nodes[i]);
-                nodesByGroupCache[nodes[i].nodeGroup].push(nodes[i]);
+                nodesByGroupCache[nodes[i].nodeGroup] = nodes[i];
             }
 
             log("nodesByGroupCache[group]->" + nodesByGroupCache[group]);
