@@ -1616,6 +1616,7 @@ function SSLManager(config) {
         me.getNodesByGroup = function(group) {
             var nodes = me.getEnvInfo();
 
+            log("nodes->" + nodes);
             log("nodesByGroupCache[group]->" + nodesByGroupCache[group]);
             if (nodesByGroupCache[group]) return nodesByGroupCache[group];
 
