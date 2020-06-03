@@ -635,6 +635,7 @@ function SSLManager(config) {
 
         log("nodeGroupValidations -> "+ nodeGroupValidations);
         if (!nodeGroupValidations.minCloudlets) {
+            log("nodeGroupValidations in if -> ");
             cloudletsAmount = parseInt(REQUIRED_MEM / me.getCloudletsMemAmount());
             nodeGroupValidations.minCloudlets = cloudletsAmount;
             platformVersion = getPlatformVersion();
@@ -645,6 +646,7 @@ function SSLManager(config) {
                 config.setValidations = true;
             }
         }
+        log("nodeGroupValidations end -> ");
         return { result: 0 };
     };
 
