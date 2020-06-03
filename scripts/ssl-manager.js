@@ -633,6 +633,7 @@ function SSLManager(config) {
 
         nodeGroupValidations = nodeManager.getNodeGroupValidations() || {};
 
+        log("nodeGroupValidations -> "+ nodeGroupValidations);
         if (!nodeGroupValidations.minCloudlets) {
             cloudletsAmount = parseInt(REQUIRED_MEM / me.getCloudletsMemAmount());
             nodeGroupValidations.minCloudlets = cloudletsAmount;
