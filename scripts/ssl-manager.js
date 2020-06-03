@@ -655,7 +655,7 @@ function SSLManager(config) {
         log(config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets)));
         log(config.nodeMemory / (config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets))));
         log(parseInt(config.nodeMemory / (config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets)))));
-        return config.nodeMemory / (config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets)));
+        return parseInt(config.nodeMemory / (config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets))));
         return CLOUDLET_MEM_AMOUNT; // TODO: read from system settings
     };
 
