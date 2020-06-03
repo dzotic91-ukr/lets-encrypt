@@ -633,9 +633,7 @@ function SSLManager(config) {
 
         nodeGroupValidations = nodeManager.getNodeGroupValidations() || {};
 
-        log("nodeGroupValidations -> "+ nodeGroupValidations);
         if (!nodeGroupValidations.minCloudlets) {
-            log("nodeGroupValidations in if -> ");
             cloudletsAmount = parseInt(REQUIRED_MEM / me.getCloudletsMemAmount());
             nodeGroupValidations.minCloudlets = cloudletsAmount;
             platformVersion = getPlatformVersion();
@@ -646,24 +644,15 @@ function SSLManager(config) {
                 config.setValidations = true;
             }
         }
-        log("nodeGroupValidations end -> ");
         return { result: 0 };
     };
 
     me.getCloudletsMemAmount = function() {
-        log("in getCloudletsMemAmount-> ");
         var nodes = nodeManager.getNodesByGroup(config.nodeGroup),
             node;
-        log("nodes-> " + nodes);
-        log("nodes[0]-> " + nodes[0]);
+
         node = nodes[0] || {};
-        log("node.fixedCloudlets->" + node.fixedCloudlets);
-        log("node.flexibleCloudlets ->" + node.flexibleCloudlets);
-        log(config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets)));
-        log(config.nodeMemory / (config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets))));
-        log(parseInt(config.nodeMemory / (config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets)))));
-        return parseInt(config.nodeMemory / (config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets))));
-        return CLOUDLET_MEM_AMOUNT; // TODO: read from system settings
+        return parseInt(config.nodeMemory / (Math.max(node.fixedCloudlets, node.flexibleCloudlets)));
     };
 
     me.initBindedDomains = function() {
@@ -1628,9 +1617,7 @@ function SSLManager(config) {
 
             if (nodesByGroupCache[group]) return nodesByGroupCache[group];
 
-            log("getNodesByGroup 33 - nodes-> " + nodes);
             for (var i = 0, n = nodes.length; i < n; i++) {
-                log("nodes[i]-> " + nodes[i]);
                 if (nodesByGroupCache[nodes[i].nodeGroup]) {
                     nodesByGroupCache[nodes[i].nodeGroup].push(nodes[i]);
                 } else {
@@ -1638,7 +1625,6 @@ function SSLManager(config) {
                 }
             }
 
-            log("getNodesByGroup - nodesByGroupCache-> " + nodesByGroupCache);
             return nodesByGroupCache[group];
         };
 
