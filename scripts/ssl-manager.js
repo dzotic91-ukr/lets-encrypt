@@ -648,6 +648,11 @@ function SSLManager(config) {
     };
 
     me.getCloudletsMemAmount = function() {
+        var nodes = me.getNodesByGroup(config.nodeGroup),
+        node;
+
+        node = nodes[0] || {};
+        return config.nodeMemory / (max(node.fixedCloudlets, node.flexibleCloudlets));
         return CLOUDLET_MEM_AMOUNT; // TODO: read from system settings
     };
 
@@ -1415,6 +1420,7 @@ function SSLManager(config) {
         var me = this,
             bCustomSSLSupported,
             sCustomSettingsPath,
+            nodesByGroupCache = {},
             nodeGroupsCache = [],
             oBackupScript,
             oBLMaster,
@@ -1605,6 +1611,18 @@ function SSLManager(config) {
                 result: 0,
                 nodeGroups: resp.nodeGroups || ""
             }
+        };
+
+        me.getNodesByGroup = function(group) {
+            var nodes = me.getEnvInfo();
+
+            if (nodesByGroupCache[group]) return nodesByGroupCache[group];
+
+            for (var i = 0, n = nodes.length; i < n; i++) {
+                nodesByGroupCache[nodes[i].nodeGroup].push(nodes[i]);
+            }
+
+            return nodesByGroupCache[group]
         };
 
         me.getNodeGroupDataByGroup = function(group) {
