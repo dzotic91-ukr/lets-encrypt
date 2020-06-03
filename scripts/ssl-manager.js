@@ -649,7 +649,7 @@ function SSLManager(config) {
 
     me.getCloudletsMemAmount = function() {
         var nodes = nodeManager.getNodesByGroup(config.nodeGroup),
-        node;
+            node;
 
         node = nodes[0] || {};
         return config.nodeMemory / (config.nodeMemory / (max(node.fixedCloudlets, node.flexibleCloudlets)));
@@ -1616,13 +1616,15 @@ function SSLManager(config) {
         me.getNodesByGroup = function(group) {
             var nodes = me.getEnvInfo();
 
+            log("nodesByGroupCache[group]->" + nodesByGroupCache[group]);
             if (nodesByGroupCache[group]) return nodesByGroupCache[group];
 
             for (var i = 0, n = nodes.length; i < n; i++) {
                 nodesByGroupCache[nodes[i].nodeGroup].push(nodes[i]);
             }
 
-            return nodesByGroupCache[group]
+            log("nodesByGroupCache[group]->" + nodesByGroupCache[group]);
+            return nodesByGroupCache[group];
         };
 
         me.getNodeGroupDataByGroup = function(group) {
