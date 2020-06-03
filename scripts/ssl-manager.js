@@ -655,7 +655,7 @@ function SSLManager(config) {
         var nodes = nodeManager.getNodesByGroup(config.nodeGroup),
             node;
         log("nodes-> " + nodes);
-        log("nodes[0]-> " + nodes[0]);        
+        log("nodes[0]-> " + nodes[0]);
         node = nodes[0] || {};
         log("node.fixedCloudlets->" + node.fixedCloudlets);
         log("node.flexibleCloudlets ->" + node.flexibleCloudlets);
@@ -1628,10 +1628,14 @@ function SSLManager(config) {
 
             if (nodesByGroupCache[group]) return nodesByGroupCache[group];
 
-            log("getNodesByGroup - nodes-> " + nodes);
+            log("getNodesByGroup 33 - nodes-> " + nodes);
             for (var i = 0, n = nodes.length; i < n; i++) {
                 log("nodes[i]-> " + nodes[i]);
-                nodesByGroupCache[nodes[i].nodeGroup] = nodes[i];
+                if (nodesByGroupCache[nodes[i].nodeGroup]) {
+                    nodesByGroupCache[nodes[i].nodeGroup].push(nodes[i]);
+                } else {
+                    nodesByGroupCache[nodes[i].nodeGroup] = [nodes[i]];
+                }
             }
 
             log("getNodesByGroup - nodesByGroupCache-> " + nodesByGroupCache);
