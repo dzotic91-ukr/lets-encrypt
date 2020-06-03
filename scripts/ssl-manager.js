@@ -1619,16 +1619,12 @@ function SSLManager(config) {
         me.getNodesByGroup = function(group) {
             var nodes = me.getNodes();
 
-            log("nodes->" + nodes);
-            log("nodesByGroupCache[group]->" + nodesByGroupCache[group]);
             if (nodesByGroupCache[group]) return nodesByGroupCache[group];
 
             for (var i = 0, n = nodes.length; i < n; i++) {
-                log("nodes[i]->" + nodes[i]);
                 nodesByGroupCache[nodes[i].nodeGroup] = nodes[i];
             }
 
-            log("nodesByGroupCache[group]->" + nodesByGroupCache[group]);
             return nodesByGroupCache[group];
         };
 
